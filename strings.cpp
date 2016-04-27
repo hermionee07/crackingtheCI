@@ -648,6 +648,82 @@ Node* checkIntersection(Node* head1, Node* head2)
     return nullptr;
 }
 
+class Stack
+{
+    private:
+        Node* head;
+        Node* minUptoHead;
+
+    public:
+        void push(int a)
+        {
+            Node* newNode = new Node(a);
+            newNode->_next = head;
+            head = newNode;
+            if (minUptoHead == nullptr)
+            {
+                minUptoHead = new Node(a);
+                minUptoHead->_next = nullptr;
+            }
+            else
+            {
+                if (minUptoHead->_data >= a)
+                {
+                    Node* temp = new Node(a);
+                    temp->_next = minUptoHead;;
+                    minUptoHead = temp;
+                }
+            }
+        }
+
+        int min() // min in the stack
+        {
+            if (minUptoHead != nullptr)
+                return minUptoHead->_data;
+            else
+                return -1;
+        }
+
+        int pop()
+        {
+            int retVal = 0;
+            if (head != nullptr)
+            {
+                retVal = head->_data;
+                Node* temp = head->_next;
+                delete head;
+                head = temp;
+                if (minUptoHead != nullptr && retVal == minUptoHead->_data)
+                {
+                    Node* temp = minUptoHead;
+                    minUptoHead = temp->_next;
+                    delete temp;
+                }
+                return retVal;
+            }
+            else
+                return -1; // need to have exception handling for errors.
+        }
+        void PrintStack()
+        {
+            Node* temp = head;
+            while(temp != nullptr)
+            {
+                cout << temp->_data << "<--";
+                temp = temp->_next;
+            }
+        }
+        Stack(): head(nullptr), minUptoHead(nullptr) {}
+        ~Stack()
+        {
+            if (head != nullptr)
+            {
+                delete head;
+                head = nullptr;
+            }
+        }
+};
+
 //bool palindrom(
 
 int main()
@@ -783,6 +859,22 @@ int main()
         numstr = numstr + char(num);
         num++;
     }
+
+    Stack mystack;
+    mystack.push(40);
+    mystack.push(30);
+    mystack.push(30);
+    mystack.push(40);
+    mystack.push(20);
+    mystack.push(10);
+    cout << "current min is " <<mystack.min() << endl;
+    cout << mystack.pop() << "... poped" << endl;
+    mystack.PrintStack();
+    cout << "current min is " <<mystack.min() << endl;
+    cout << mystack.pop() << "... poped" << endl;
+    mystack.PrintStack();
+
+    cout << "current min is " <<mystack.min()  << endl;
     //cout << numstr;
     //cout << "Kth is ..." << temp->_data;
    return 0;

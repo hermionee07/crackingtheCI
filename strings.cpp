@@ -163,7 +163,7 @@ class Node
         int _data;
         ~Node()
         {
-            cout << "deleting " << endl;
+            cout << "deleting " << _data <<endl;
         }
 
         Node(int a) : _data(a) { _next = nullptr;}
@@ -716,15 +716,71 @@ class Stack
         Stack(): head(nullptr), minUptoHead(nullptr) {}
         ~Stack()
         {
-            if (head != nullptr)
+            while (head != nullptr)
             {
-                delete head;
-                head = nullptr;
+                Node* temp = head;
+                head = temp->_next;
+                delete temp;
             }
         }
 };
 
 //bool palindrom(
+
+class Queue
+{
+    private:
+        Node* first;
+        Node* last;
+    public:
+        Queue() : first(nullptr), last(nullptr) {}
+        ~Queue()
+        {
+            while(first != nullptr)
+            {
+                Node* temp = first;
+                first = temp->_next != nullptr ? temp->_next : nullptr;
+                delete temp;
+            }
+        }
+        void enqueue(int a)
+        {
+            Node* newNode = new Node(a);
+            if(last != nullptr)
+            {
+                last->_next = newNode;
+            }
+            last = newNode;
+            if (first == nullptr)
+                first = last;
+
+        }
+
+        int dequeue()
+        {
+            if (first == nullptr)
+                return -1;
+            else
+            {
+                Node* temp = first;
+                first = temp->_next != nullptr ? temp->_next : nullptr;
+                delete temp;
+                return temp->_data;
+            }
+        }
+        void printQueue()
+        {
+            Node* temp = first;
+            while (temp != nullptr)
+            {
+                cout << temp->_data << "-->" ;
+                temp = temp->_next;
+            }
+            cout << endl;
+        }
+
+};
+
 
 int main()
 {
@@ -875,7 +931,17 @@ int main()
     mystack.PrintStack();
 
     cout << "current min is " <<mystack.min()  << endl;
-    //cout << numstr;
+    Queue myqueue;
+    myqueue.enqueue(10);
+    myqueue.enqueue(20);
+    myqueue.enqueue(30);
+    myqueue.enqueue(40);
+    myqueue.enqueue(50);
+    myqueue.enqueue(60);
+    myqueue.printQueue();
+    cout << "dequeueed..." << myqueue.dequeue() << endl;
+    myqueue.printQueue();
+   //cout << numstr;
     //cout << "Kth is ..." << temp->_data;
    return 0;
 }

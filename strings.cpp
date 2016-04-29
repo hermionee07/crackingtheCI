@@ -163,7 +163,7 @@ class Node
         int _data;
         ~Node()
         {
-            cout << "deleting " << _data <<endl;
+       //     cout << "deleting " << _data <<endl;
         }
 
         Node(int a) : _data(a) { _next = nullptr;}
@@ -722,10 +722,146 @@ class Stack
                 head = temp->_next;
                 delete temp;
             }
+            while (minUptoHead != nullptr)
+            {
+                Node* temp = minUptoHead;
+                minUptoHead = temp->_next;
+                delete temp;
+            }
         }
 };
 
-//bool palindrom(
+class SStack
+{
+    private:
+        Node* head;
+
+    public:
+        void push(int a)
+        {
+            Node* newNode = new Node(a);
+            newNode->_next = head;
+            head = newNode;
+        }
+
+        int pop()
+        {
+            int retVal = 0;
+            if (head != nullptr)
+            {
+                retVal = head->_data;
+                Node* temp = head->_next;
+                delete head;
+                head = temp;
+                return retVal;
+            }
+            else
+                return -1; // need to have exception handling for errors.
+        }
+        int peek()
+        {
+            if (head != nullptr)
+                return head->_data;
+            else
+                return -1;
+        }
+
+        void printStack()
+        {
+            Node* temp = head;
+            while(temp != nullptr)
+            {
+                cout << temp->_data << "<--";
+                temp = temp->_next;
+            }
+        }
+
+        SStack(): head(nullptr) {}
+
+        ~SStack()
+        {
+            while (head != nullptr)
+            {
+                Node* temp = head;
+                head = temp->_next;
+                delete temp;
+            }
+        }
+        bool empty()
+        {
+            if (head != nullptr)
+                return false;
+            return true;
+        }
+
+};
+
+// Towers of hanoi using stacks
+// first tower with arranged assendingly
+// second is free, need to move from first to third.
+// (A) Only one disk can be moved at a time.
+// (B) A disk is slid off the top of one rod onto the next rod.
+// (C) A disk can only be placed on top of a larger disk.
+void hanoiUp(SStack& source, SStack& aux, SStack& dest)
+{
+    //if(tower1.empty())
+    //    return;
+    // So I am not going to do this now.
+}
+
+// can use additional stack but no other data structure;
+void sortAStack(SStack& a)
+{
+    SStack buffer;
+    while(!a.empty())
+    {
+        if (buffer.empty())
+        {
+            buffer.push(a.pop());
+            buffer.printStack();
+            cout << "<<<<<<<<<<<<<" <<endl;
+            continue;
+        }
+        int temp;
+        if (a.peek() > buffer.peek())
+        {
+            temp = a.pop();
+            cout << "temp is " << temp << endl;
+            cout << "buffer.peek() is " << buffer.peek() << endl;
+            while(buffer.peek() < temp && !buffer.empty())
+            {
+                cout << "pushing " << buffer.peek() << " into a " << endl;
+                a.push(buffer.pop());
+                cout << "a is ";
+                a.printStack();
+                cout << endl;
+            }
+            buffer.push(temp);
+            cout << "buffer is ";
+            buffer.printStack();
+            cout << "\n.................................\n";
+            continue;
+        }
+        if (!buffer.empty() && a.peek() < buffer.peek())
+        {
+            buffer.push(a.pop());
+            buffer.printStack();
+            cout << "\n----------------------------------\n";
+            cout << "a is " ;
+            a.printStack();
+            cout << endl;
+            if (a.empty())
+            {
+                cout << "coming here" << endl;
+                break;
+            }
+            continue;
+        }
+
+    }
+   // buffer.printStack();
+
+}
 
 class Queue
 {
@@ -778,9 +914,56 @@ class Queue
             }
             cout << endl;
         }
+        bool empty()
+        {
+            if (first != nullptr)
+                return false;
+            return true;
+        }
 
+;
+
+// Make a queue with 2 stacks.
+class MyQ
+{
+    private:
+        SStack pushStack;
+        SStack popStack;
+    public:
+        void enQ(int a)
+        { // push it all on pushStack
+            pushStack.push(a);
+        }
+
+        int deQ()
+        {// pop all from the pushstack and put into the
+         // popStack.
+            if (popStack.empty())
+            {
+                while(!pushStack.empty())
+                {
+                    popStack.push(pushStack.pop());
+                }
+            }
+            return popStack.pop();
+        }
+
+        void printQ()
+        {
+            popStack.printStack();
+            pushStack.printStack();
+        }
+
+        MyQ() {}
+        ~MyQ() {}
 };
 
+// Animal Shelter
+class AnimalShelter
+{
+   // private:
+
+};
 
 int main()
 {
@@ -916,7 +1099,7 @@ int main()
         num++;
     }
 
-    Stack mystack;
+    /*Stack mystack;
     mystack.push(40);
     mystack.push(30);
     mystack.push(30);
@@ -940,7 +1123,28 @@ int main()
     myqueue.enqueue(60);
     myqueue.printQueue();
     cout << "dequeueed..." << myqueue.dequeue() << endl;
-    myqueue.printQueue();
+    myqueue.printQueue();*/
+    MyQ myq;
+    myq.enQ(10);
+    //myq.enQ(20);
+    //myq.enQ(30);
+    //myq.enQ(40);
+    //myq.enQ(50);
+    myq.printQ();
+    cout << myq.deQ() <<" deQed..." <<endl;
+    myq.enQ(20);
+    myq.printQ();
+    cout << "\nthe stack is ..." ;
+    SStack tower1;
+    tower1.push(50);
+    tower1.push(60);
+    tower1.push(20);
+    tower1.push(80);
+    tower1.push(10);
+    tower1.printStack();
+    cout << "hello" <<endl;
+    sortAStack(tower1);
+
    //cout << numstr;
     //cout << "Kth is ..." << temp->_data;
    return 0;

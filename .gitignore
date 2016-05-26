@@ -1,0 +1,5 @@
+*.o
+*.sw*
+.sconsign.dblite
+core
+*.out

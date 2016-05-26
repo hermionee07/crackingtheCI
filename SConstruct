@@ -1,2 +1,4 @@
+
 env=Environment(CXXFLAGS="-std=c++0x")
-env.Program('strings.cpp')
+sources = [ 'Nodes.cpp', 'Stacks.cpp', 'Queues.cpp' , 'strings.cpp', 'main.cpp']
+env.Program(target = 'a.out', source = sources)
